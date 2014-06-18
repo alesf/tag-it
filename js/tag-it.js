@@ -241,23 +241,20 @@
                     // Tab will also create a tag, unless the tag input is empty,
                     // in which case it isn't caught.
                     if (
-                        (event.which === $.ui.keyCode.COMMA && event.shiftKey === false) ||
                         event.which === $.ui.keyCode.ENTER ||
                         (
                             event.which == $.ui.keyCode.TAB &&
                             that.tagInput.val() !== ''
                         ) ||
                         (
+                            (event.which === $.ui.keyCode.COMMA && event.shiftKey === false) &&
+                            that._tagInputHasClosedQuotes()
+
+                        ) ||
+                        (
                             event.which == $.ui.keyCode.SPACE &&
                             that.options.allowSpaces !== true &&
-                            (
-                                $.trim(that.tagInput.val()).replace( /^s*/, '' ).charAt(0) != '"' ||
-                                (
-                                    $.trim(that.tagInput.val()).charAt(0) == '"' &&
-                                    $.trim(that.tagInput.val()).charAt($.trim(that.tagInput.val()).length - 1) == '"' &&
-                                    $.trim(that.tagInput.val()).length - 1 !== 0
-                                )
-                            )
+                            that._tagInputHasClosedQuotes()
                         )
                     ) {
                         // Enter submits the form if there's no text in the input.
@@ -362,6 +359,16 @@
 
         _tags: function() {
             return this.tagList.find('.tagit-choice:not(.removed)');
+        },
+
+        _tagInputHasClosedQuotes: function() {
+            var inputVal = this._tagInput.val();
+            return $.trim(inputVal).replace( /^s*/, '' ).charAt(0) != '"' ||
+            (
+                $.trim(inputVal).charAt(0) == '"' &&
+                $.trim(inputVal).charAt($.trim(inputVal).length - 1) == '"' &&
+                $.trim(inputVal).length - 1 !== 0
+            )
         },
 
         assignedTags: function() {
@@ -588,4 +595,3 @@
 
     });
 })(jQuery);
-
